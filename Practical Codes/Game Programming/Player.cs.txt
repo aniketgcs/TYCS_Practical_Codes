@@ -1,0 +1,48 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+
+public class Player : MonoBehaviour
+{
+    public Rigidbody2D rb2d;
+    float moveH, moveV;
+    public float speed;
+    public string pickUpTag = "PickUp";
+    int pickUpTotal, count;
+    public Text ShowText;
+
+    void Start()
+    {
+        rb2d = GetComponent<Rigidbody2D>();
+        count = 0;
+        pickUpTotal = 5;
+        coinCount();
+
+    }
+
+    void FixedUpdate()
+    {
+        moveH = Input.GetAxis("Horizontal");
+        moveV = Input.GetAxis("Vertical");
+        var movement = new Vector2(moveH, moveV) * speed * Time.deltaTime;
+        rb2d.AddForce(movement);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("PickUp")) 
+        {
+            other.gameObject.SetActive(false);
+            count++;
+            coinCount();
+        }
+    }
+
+    private void coinCount() 
+    {
+        ShowText.text = "Count : " + count;
+        if (count >= pickUpTotal)
+        {
+            ShowText.text = "Level Won";
+        }
+    }
+}
